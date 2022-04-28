@@ -85,6 +85,12 @@ def main():
     
     pbar = tqdm.tqdm(total = len(dataset), position = 0)
     for d, fname in zip(dataset, dataset.files):
+        #eg:
+        #a = [1,2,3]
+        #b = [4,5,6]
+        #zipped = zip(a,b) 
+        #输出：
+        #[(1, 4), (2, 5), (3, 6)]
         data = d[0]
         fname = os.path.basename(fname)
         np.save(os.path.join(save_dir, f'{fname}.npy'), data)
