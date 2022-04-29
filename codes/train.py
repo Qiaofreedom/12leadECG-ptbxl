@@ -67,8 +67,8 @@ def main():
     dataloader_val = torch.utils.data.DataLoader(dataset_val, num_workers = num_workers, batch_size = batch_size, pin_memory = True, shuffle = False)
         
     # Get model
-    d = dataset_train[0]
-    input_channel = d[0].shape[0]
+    d = dataset_train[0] # dataset_train 包含n 个患者，d 为其中一个
+    input_channel = d[0].shape[0] # 这里是12
     num_classes = d[1].shape[0]
     del d
     model_config_name = opt.model_config_name
