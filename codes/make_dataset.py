@@ -62,12 +62,12 @@ def main():
     df_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../input/physionet.org/files/ptb-xl/1.0.1')
 
     df = pd.read_csv(os.path.join(df_dir, 'ptbxl_database.csv'))
-    df['scp_codes'] = df['scp_codes'].apply(lambda x: ast.literal_eval(x))
-    df['label'] = df['scp_codes'].apply(lambda x: set(x.keys()))
+    df['scp_codes'] = df['scp_codes'].apply(lambda x: ast.literal_eval(x)) # df['scp_codes']里面是一个小字典
+    df['label'] = df['scp_codes'].apply(lambda x: set(x.keys())) # 把上面一行的小字典里面的 键 取唯一
     df_scp = pd.read_csv(os.path.join(df_dir, 'scp_statements.csv'))
-    df_scp.index = df_scp['Unnamed: 0'].values
-    df_scp = df_scp.iloc[:,1:]
-    df_scp['diagnostic'] = [idx_code if val == 1 else None for idx_code, val in zip(df_scp.index, df_scp['diagnostic'].values)]
+    df_scp.index = df_scp['Unnamed: 0'].values # df_scp['Unnamed: 0'] 是一个小字典，键是行序列号（是 0 到...）。值是（0 到...）（就是这个）
+    df_scp = df_scp.iloc[:,1:] # 去掉的 第一列是（0 到...）
+    df_scp['diagnostic'] = [idx_code if val == 1 else None for idx_code, val in zip(df_scp.index, df_scp['diagnostic'].values)] # 'diagnostic'这一列中值为1对应的行序列号。 生成的是[0,...,33(粗略估计)]
     df_scp['all'] = df_scp.index
 
     config = get_input_config()
@@ -83,7 +83,7 @@ def main():
     os.makedirs(save_dir)
     json.dump(config, open(os.path.join(config_dir, 'config.json'), 'w'))
     
-    pbar = tqdm.tqdm(total = len(dataset), position = 0)
+    pbar = tqdm.tqdm(total = len(dataset), position = 0)  #进度条
     for d, fname in zip(dataset, dataset.files):
         #eg:
         #a = [1,2,3]
