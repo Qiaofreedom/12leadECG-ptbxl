@@ -67,12 +67,12 @@ class SignalDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.files)
     def __getitem__(self, idx):
-        file = self.files[idx]
+        file = self.files[idx] # 单个患者
         label = self.labels_encoded[idx]
         sig = self.load_sig(file)
         return sig, label.astype(np.float32)
     def load_sig(self, file):
-        sig, meta = wfdb.rdsamp(file) # wfdb.rdsamp 专门数据库读取数据。如果是12导联，则数据的shape是[n * 12].
+        sig, meta = wfdb.rdsamp(file) # 单个患者。wfdb.rdsamp 专门数据库读取数据。如果是12导联，则数据的shape是[n * 12].
         if self.upsampling_factor != 1:
             sig = scipy.signal.resample(sig, int(len(sig) * self.upsampling_factor))
         sig = sig.T  # shape是[12 * n]
