@@ -45,17 +45,25 @@ class SignalDataset(torch.utils.data.Dataset):
             self.target_col = 'filename_lr'
         elif fs == 500:
             self.target_col = 'filename_hr'
-        df = df[df[self.target_col].apply(lambda x: x.split('/')[-1].split('_')[0] not in invalid_file_name)]
-        self.files = [os.path.join(base_dir, fname) for fname in df[self.target_col].values]
+        df = df[df[self.target_col].apply(lambda x: x.split('/')[-1].split('_')[0] not in invalid_file_name)]  # 按照行的序号提取不同患者的数据（每个患者12个列） 组成集合
+        self.files = [os.path.join(base_dir, fname) for fname in df[self.target_col].values]  # 所有患者的数据的 路径的集合 
         self.upsampling_factor = upsampling_factor
         self.fs = fs * upsampling_factor
+        
         # generating labels
         dict_label = df_scp[df_scp[target_label].isnull() == False][target_label].to_dict()
-        labels = df['label'].apply(lambda x: [dict_label.get(i) for i in x if i in dict_label]).values
-        self.mlb = MultiLabelBinarizer().fit(labels)
+        # data（df_scp）数据类型为DataFrame结构, 一般来说，to_dict()输出为 data_dict[key1][key2]；data_dict 为数据名；key1 为列属性的键值（外层）；key2 为内层字典对应的键值；（换句话说，就是大字典里面的值就是一个小字典）
+        # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。键是行序列号数字（ecg_id），值是 ‘key1’对应的那一列的值,这里是['diagnostic', 'form', 'rhythm', 'diagnostic_class', 'diagnostic_subclass', 'all']。
+        
+        labels = df['label'].apply(lambda x: [dict_label.get(i) for i in x if i in dict_label]).values  #Python 字典(Dictionary) get() 函数返回指定键的值。这里的i 就是（键）行序列号数字（ecg_id），.get(i)就是得到对应键的值。df['label']得到一个小字典，x就是指那个字典。
+        # 说的是在 df 这个字典的键'label'中存进 dict_label 字典中每个键行序列号数字（ecg_id）对应的值组成的列表 ['diagnostic', 'form', 'rhythm', 'diagnostic_class', 'diagnostic_subclass', 'all']。也就是先往键的值里面存列表，然后再用.value 把这个列表取出来。
+        # 所以最后 labels 是一个列表
+        
+        self.mlb = MultiLabelBinarizer().fit(labels) # .fit()指 用labels 这个数据来 拟合 MultiLabelBinarizer() 这个模型。
         self.labels = labels
         self.labels_encoded = self.mlb.transform(labels)
         self.sig_scaling = sig_scaling
+        
     def __len__(self):
         return len(self.files)
     def __getitem__(self, idx):
@@ -64,10 +72,10 @@ class SignalDataset(torch.utils.data.Dataset):
         sig = self.load_sig(file)
         return sig, label.astype(np.float32)
     def load_sig(self, file):
-        sig, meta = wfdb.rdsamp(file)
+        sig, meta = wfdb.rdsamp(file) # wfdb.rdsamp 专门数据库读取数据。如果是12导联，则数据的shape是[n * 12].
         if self.upsampling_factor != 1:
             sig = scipy.signal.resample(sig, int(len(sig) * self.upsampling_factor))
-        sig = sig.T
+        sig = sig.T  # shape是[12 * n]
         if self.sig_scaling is not None:
             for i in range(len(sig)):
                 sig[i] = self.sig_scaling(sig[i])
@@ -83,8 +91,8 @@ class STFTDataset(SignalDataset):
                  upsampling_factor = 1,
                  nperseg = 128,
                  t_len = 500,
-#                  stretch = False,
-#                  stretch_size = 500,
+                 stretch = False,
+                 stretch_size = 500,
                  sig_scaling = None,
                  scaling = None
                 ):
@@ -185,7 +193,7 @@ class CWTDataset(SignalDataset):
             output = self.scaling(output)
         return output
 
-def get_dataset(config, df, df_scp, base_dir):
+def get_dataset(config, df, df_scp, base_dir): # 这个要用到
     if isinstance(config, dict) == False:
         config = vars(config)
     # base configurations
