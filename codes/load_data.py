@@ -107,7 +107,7 @@ class STFTDataset(SignalDataset):
         stft = self.get_stft(file)
         return stft, label.astype(np.float32)
     def get_stft(self, file):
-        sig = self.load_sig(file)
+        sig = self.load_sig(file)  # shape是[12 * n]
         output = []
         for idx, s in enumerate(sig):
             f,t,Zxx = scipy.signal.stft(s, fs = self.fs, nperseg = self.nperseg, noverlap = self.noverlap, return_onesided = True)
