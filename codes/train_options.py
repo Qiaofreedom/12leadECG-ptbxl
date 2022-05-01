@@ -96,14 +96,14 @@ def main():
     df_val = df[df['strat_fold'] == valid_index]
     df_train = df[df['strat_fold'] != valid_index]
     
-    dataset_train = get_dataset(opt, df_train, df_scp, df_dir)
+    dataset_train = get_dataset(opt, df_train, df_scp, df_dir)  # get_dataset这个函数得到的 dataset_train 有sig,还有lable.
     dataloader_train = torch.utils.data.DataLoader(dataset_train, num_workers = num_workers, batch_size = batch_size, pin_memory = True, shuffle = True)
     
     dataset_test = get_dataset(opt, df_val, df_scp, df_dir)
     dataloader_test = torch.utils.data.DataLoader(dataset_test, num_workers = num_workers, batch_size = batch_size, pin_memory = True, shuffle = False)
 
     # Get model
-    d = dataset_train[0]
+    d = dataset_train[0] #dataset_train 有sig,还有lable.所以 d[0]指sig，d[1]指lable。shape[0]指矩阵的行数
     input_channel = d[0].shape[0]
     num_classes = d[1].shape[0]
     del d
