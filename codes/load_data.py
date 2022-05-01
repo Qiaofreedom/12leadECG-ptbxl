@@ -70,9 +70,9 @@ class SignalDataset(torch.utils.data.Dataset):
         file = self.files[idx] # 单个患者
         label = self.labels_encoded[idx]
         sig = self.load_sig(file)
-        return sig, label.astype(np.float32)
+        return sig, label.astype(np.float32)  # torch.utils.data.Dataset构造的这个迭代器，让这个__getitem__重复len(self.files)次。最后返回的是所有患者的数据。
     def load_sig(self, file):
-        sig, meta = wfdb.rdsamp(file) # 单个患者。wfdb.rdsamp 专门数据库读取数据，meta指头文件。如果是12导联，则数据的shape是[n * 12].n指这个数据库一共有n个患者
+        sig, meta = wfdb.rdsamp(file) # 单个患者。wfdb.rdsamp 专门数据库读取数据，meta指头文件。如果是12导联，则数据的shape是[n * 12].n指这个患者数据一共有n个采样点
         if self.upsampling_factor != 1:
             sig = scipy.signal.resample(sig, int(len(sig) * self.upsampling_factor))
         sig = sig.T  # shape是[12 * n]
