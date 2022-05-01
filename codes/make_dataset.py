@@ -84,7 +84,7 @@ def main():
     json.dump(config, open(os.path.join(config_dir, 'config.json'), 'w'))
     
     pbar = tqdm.tqdm(total = len(dataset), position = 0)  #进度条。total = len(dataset)指一共有多少个患者
-    for d, fname in zip(dataset, dataset.files):
+    for d, fname in zip(dataset, dataset.files):   # dataset是所有患者的数据，dataset.files 是所有患者的数据的 路径的集合
         #eg:
         #a = [1,2,3]
         #b = [4,5,6]
