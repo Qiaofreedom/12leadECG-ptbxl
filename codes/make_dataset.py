@@ -91,7 +91,7 @@ def main():
         #zipped = zip(a,b) 
         #输出：
         #[(1, 4), (2, 5), (3, 6)]
-        data = d[0] # dataset 有sig,还有lable.所以 d[0]指sig，d[1]指lable。
+        data = d[0] # dataset 有sig,还有lable.所以 d[0]指sig，d[1]指lable。因为这里的循环用zip打包了，所以这里的data指的是单个患者数据
         fname = os.path.basename(fname)
         
         #path = '/home/User/Documents/file.txt'
