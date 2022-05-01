@@ -114,7 +114,7 @@ class STFTDataset(SignalDataset):
             Zxx = abs(Zxx) + 1e-10
             Zxx = np.log(Zxx ** 2)
             output.append(Zxx)
-        output = np.array(output).astype(np.float32)
+        output = np.array(output).astype(np.float32) # shape是[12 * n]
         if self.scaling is not None:
             output = self.scaling(output)
         return output
@@ -136,7 +136,7 @@ class STFTDataset_Image(STFTDataset):
     def __getitem__(self, idx):
         file = self.files[idx]
         label = self.labels_encoded[idx]
-        stft = self.get_stft(file)
+        stft = self.get_stft(file) # shape是[12 * n]
         output = []
         for s in stft:
             fig = plt.figure()
@@ -147,6 +147,13 @@ class STFTDataset_Image(STFTDataset):
             output.append(np.array(fig.canvas.renderer._renderer)[:,:,:3].transpose(2,0,1))
             plt.close()
         output = np.concatenate(output) / 255.
+        
+        #a=np.array([1,2,3])
+        #b=np.array([11,22,33])
+        #c=np.array([44,55,66])
+        #np.concatenate((a,b,c),axis=0)  # 默认情况下，axis=0可以不写
+        #array([ 1,  2,  3, 11, 22, 33, 44, 55, 66]) #对于一维数组拼接，axis的值不影响最后的结果
+        
         return output.astype(np.float32), label.astype(np.float32)
     
 class CWTDataset(SignalDataset):
