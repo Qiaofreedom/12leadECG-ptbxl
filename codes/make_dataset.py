@@ -71,14 +71,14 @@ def main():
     df_scp['all'] = df_scp.index
 
     config = get_input_config()
-    config_dir = os.path.join(config['base_dir'], config['save_dir'])
+    config_dir = os.path.join(config['base_dir'], config['save_dir']) #用于配置文件(.json)的路径
     dataset = get_dataset(config, df, df_scp, df_dir)
     
     print('Configurations:')
     print(config)
     print(f'Files will be saved in {config_dir}')
     
-    save_dir = os.path.join(config_dir, 'data')
+    save_dir = os.path.join(config_dir, 'data') #用于存储数据（后来会变成.npy格式）的路径
     os.makedirs(config_dir)
     os.makedirs(save_dir)
     json.dump(config, open(os.path.join(config_dir, 'config.json'), 'w'))
@@ -93,6 +93,12 @@ def main():
         #[(1, 4), (2, 5), (3, 6)]
         data = d[0]
         fname = os.path.basename(fname)
+        
+        #path = '/home/User/Documents/file.txt'
+        #basename = os.path.basename(path)
+        #print(basename)
+        #得到path = 'file.txt'
+        
         np.save(os.path.join(save_dir, f'{fname}.npy'), data)
         pbar.update(1)    # pbar.update(1)用来更新进度，这里的1指的是完成了一个batch的训练，让进度条加1。
     pbar.close()
