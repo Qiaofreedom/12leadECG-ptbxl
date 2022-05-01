@@ -83,7 +83,7 @@ def main():
     os.makedirs(save_dir)
     json.dump(config, open(os.path.join(config_dir, 'config.json'), 'w'))
     
-    pbar = tqdm.tqdm(total = len(dataset), position = 0)  #进度条
+    pbar = tqdm.tqdm(total = len(dataset), position = 0)  #进度条。total = len(dataset)指一共有多少个患者
     for d, fname in zip(dataset, dataset.files):
         #eg:
         #a = [1,2,3]
