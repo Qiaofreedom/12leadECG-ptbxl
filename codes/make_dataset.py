@@ -91,7 +91,7 @@ def main():
         #zipped = zip(a,b) 
         #输出：
         #[(1, 4), (2, 5), (3, 6)]
-        data = d[0]
+        data = d[0] # dataset 有sig,还有lable.所以 d[0]指sig，d[1]指lable。
         fname = os.path.basename(fname)
         
         #path = '/home/User/Documents/file.txt'
