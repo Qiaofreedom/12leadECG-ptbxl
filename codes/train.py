@@ -93,7 +93,7 @@ def main():
     temp_dir = temp_dir.name
     os.makedirs(temp_dir)
     
-    json.dump(vars(opt), open(os.path.join(temp_dir, 'options.json'), 'w'))
+    json.dump(vars(opt), open(os.path.join(temp_dir, 'options.json'), 'w')) #vars(opt)是字典
 
     for epoch in range(EPOCH):
         # train
