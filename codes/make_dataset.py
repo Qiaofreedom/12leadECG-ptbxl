@@ -14,14 +14,14 @@ import pandas as pd
 import scipy.signal
 from sklearn.preprocessing import MultiLabelBinarizer
 from load_data import SignalDataset, CWTDataset, STFTDataset, get_dataset, standard_normalization, minmax_normalization, both_normalization
-from train_options import get_opt
+from train_options import get_opt  # 返回的是 config
 
 import torch
 
 
 def get_input_config():
     base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data')
-    opt = get_opt()
+    opt = get_opt()  # 返回的是 config
     # opt for base
     target_label = opt.target_label
     data_type = opt.data_type
