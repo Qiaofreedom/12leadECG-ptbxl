@@ -100,7 +100,7 @@ def main():
         #得到path = 'file.txt'
         
         np.save(os.path.join(save_dir, f'{fname}.npy'), data)
-        pbar.update(1)    # pbar.update(1)用来更新进度，这里的1指的是完成了一个batch的训练，让进度条加1。
+        pbar.update(1)    # pbar.update(1)用来更新进度，这里的1指的是完成了一个患者的训练，让进度条加1。
     pbar.close()
     print(f'Files are saved in {config_dir}')
     
