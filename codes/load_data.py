@@ -203,6 +203,16 @@ class CWTDataset(SignalDataset):
 def get_dataset(config, df, df_scp, base_dir): # 这个要用到
     if isinstance(config, dict) == False:
         config = vars(config)
+  
+#举例：class Geeks:
+    #def __init__(self, name1 = "Arun", num2 = 46, name3 = "Rishab"):
+        #self.name1 = name1 
+        #self.num2 = num2 
+        #self.name3 = name3 
+  #GeeksforGeeks = Geeks() 
+  #print(vars(GeeksforGeeks))
+  #输出：{'num2':46, 'name1':'Arun', 'name3':'Rishab'}
+
     # base configurations
     target_label = config['target_label']
     data_type = config['data_type']
