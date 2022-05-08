@@ -62,8 +62,8 @@ def main():
     df_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../input/physionet.org/files/ptb-xl/1.0.1')
 
     df = pd.read_csv(os.path.join(df_dir, 'ptbxl_database.csv'))
-    df['scp_codes'] = df['scp_codes'].apply(lambda x: ast.literal_eval(x)) # df['scp_codes']里面是一个小字典
-    df['label'] = df['scp_codes'].apply(lambda x: set(x.keys())) # 把上面一行的小字典里面的 键 取唯一
+    df['scp_codes'] = df['scp_codes'].apply(lambda x: ast.literal_eval(x)) # df['scp_codes']里面每一行对应的是一个小字典，ast.literal_eval(x)保证这个字典不是str
+    df['label'] = df['scp_codes'].apply(lambda x: set(x.keys())) # 把上面每一行的小字典里面的 键 取唯一
     df_scp = pd.read_csv(os.path.join(df_dir, 'scp_statements.csv'))
     df_scp.index = df_scp['Unnamed: 0'].values # df_scp['Unnamed: 0'] 是一个小字典，键是行序列号（是 0 到...）。值是（0 到...）（就是这个）
     df_scp = df_scp.iloc[:,1:] # 去掉的 第一列是（0 到...）
