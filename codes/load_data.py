@@ -52,12 +52,14 @@ class SignalDataset(torch.utils.data.Dataset):
         
         # generating labels
         dict_label = df_scp[df_scp[target_label].isnull() == False][target_label].to_dict()
-        # data（df_scp）数据类型为DataFrame结构, 一般来说，to_dict()输出为 data_dict[key1][key2]；data_dict 为数据名；key1 为列属性的键值（外层）；key2 为内层字典对应的键值；（换句话说，就是大字典里面的值就是一个小字典）
-        # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。小字典的 键是行序列号数字（ecg_id），值是 ‘key1’对应的 那一列 的值,这里是['diagnostic', 'form', 'rhythm', 'diagnostic_class', 'diagnostic_subclass', 'all']。
+        # 这里target_label指的是 'diagnostic'
+        # data（df_scp）数据类型为DataFrame结构, 一般来说，to_dict()输出为 data_dict[key1][key2]；data_dict 为数据名；key1 为列属性的键值（即 'diagnostic'）；key2 为内层字典对应的键值；（换句话说，就是大字典里面的值就是一个小字典）
+        # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。小字典的 键是 scp 这个表格的第一列（NDT,NST_等），值是 ‘key1’对应的 那一列 的值,这里是指 'diagnostic' 这一列对应的值，也就是1
         
         labels = df['label'].apply(lambda x: [dict_label.get(i) for i in x if i in dict_label]).values  #Python 字典(Dictionary) get() 函数返回指定键的值。这里的i 就是（键）行序列号数字（ecg_id），.get(i)就是得到对应键的值。df['label']得到一个小字典，x就是指那个字典。
-        # 说的是在 df 这个字典的键'label'（新建的）中存进 dict_label 字典中每个键行序列号数字（ecg_id）对应的值组成的列表 ['diagnostic', 'form', 'rhythm', 'diagnostic_class', 'diagnostic_subclass', 'all']。也就是先往键的值里面存列表，然后再用.value 把这个列表取出来。
+        # 说的是在 df 这个字典的键'label'（新建的）中存进 dict_label 字典中每个键行序列号数字（ecg_id）对应的值组成的列表 [1（'diagnostic'对应）]。也就是先往键的值里面存列表，然后再用.value 把这个列表取出来。
         # 所以最后 labels 是一个列表
+        # 这个过程就是 先看 dict_label 这个字典的键值（NDT,NST_等），再看df['label']这个字典的键值，同时符合，就把这个键值 对应的值1，留下（这里是指 'diagnostic' 这一列对应的值，也就是1）
         
         self.mlb = MultiLabelBinarizer().fit(labels) # .fit()指 用labels 这个数据来 拟合 MultiLabelBinarizer() 这个模型。
         self.labels = labels
