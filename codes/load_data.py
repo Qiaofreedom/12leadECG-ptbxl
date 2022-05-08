@@ -56,7 +56,7 @@ class SignalDataset(torch.utils.data.Dataset):
         # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。小字典的 键是行序列号数字（ecg_id），值是 ‘key1’对应的 那一列 的值,这里是['diagnostic', 'form', 'rhythm', 'diagnostic_class', 'diagnostic_subclass', 'all']。
         
         labels = df['label'].apply(lambda x: [dict_label.get(i) for i in x if i in dict_label]).values  #Python 字典(Dictionary) get() 函数返回指定键的值。这里的i 就是（键）行序列号数字（ecg_id），.get(i)就是得到对应键的值。df['label']得到一个小字典，x就是指那个字典。
-        # 说的是在 df 这个字典的键'label'中存进 dict_label 字典中每个键行序列号数字（ecg_id）对应的值组成的列表 ['diagnostic', 'form', 'rhythm', 'diagnostic_class', 'diagnostic_subclass', 'all']。也就是先往键的值里面存列表，然后再用.value 把这个列表取出来。
+        # 说的是在 df 这个字典的键'label'（新建的）中存进 dict_label 字典中每个键行序列号数字（ecg_id）对应的值组成的列表 ['diagnostic', 'form', 'rhythm', 'diagnostic_class', 'diagnostic_subclass', 'all']。也就是先往键的值里面存列表，然后再用.value 把这个列表取出来。
         # 所以最后 labels 是一个列表
         
         self.mlb = MultiLabelBinarizer().fit(labels) # .fit()指 用labels 这个数据来 拟合 MultiLabelBinarizer() 这个模型。
