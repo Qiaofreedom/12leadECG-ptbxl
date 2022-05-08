@@ -51,16 +51,26 @@ class SignalDataset(torch.utils.data.Dataset):
         self.fs = fs * upsampling_factor
         
         # generating labels
-        dict_label = df_scp[df_scp[target_label].isnull() == False][target_label].to_dict()
+        dict_label = df_scp[df_scp[target_label].isnull() == False][target_label].to_dict() # 转化成 {index(是 NDT,NST_等) : value('diagnostic'这一列为1的序列号，生成的是[0,...,20(粗略估计)] )}
+      
         # 这里target_label指的是 'diagnostic'
         # data（df_scp）数据类型为DataFrame结构, 一般来说，to_dict()输出为 data_dict[key1][key2]；data_dict 为数据名；key1 为列属性的键值（即 'diagnostic'）；key2 为内层字典对应的键值；（换句话说，就是大字典里面的值就是一个小字典）
-        # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。小字典的 键是 scp 这个表格的第一列（NDT,NST_等），值是 ‘key1’对应的 那一列 的值,这里是指 'diagnostic' 这一列对应的值，也就是1
+        # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。生成的小字典的键是原来的。行序列号（不连续），已经根据'diagnostic'这一列为1被筛选），字典的值是 'diagnostic'这一列值为1对应的 行序列号（df_scp.index中的）。 生成的是[0,...,33..(粗略估计)]），值是 ‘key1’对应的 那一列 的值,这里是指 'diagnostic' 这一列对应的值，也就是1
         
-        labels = df['label'].apply(lambda x: [dict_label.get(i) for i in x if i in dict_label]).values  #Python 字典(Dictionary) get() 函数返回指定键的值。这里的i 就是（键）行序列号数字（ecg_id），.get(i)就是得到对应键的值。df['label']得到一个小字典，x就是指那个字典。
+        # df_scp = pd.read_csv(os.path.join(df_dir, 'scp_statements.csv'))  NDT,NST_等是行索引
+        # df_scp.index = df_scp['Unnamed: 0'].values # df_scp['Unnamed: 0'] 是一个小字典，键是行序列号（是 0 到...）。值是（0 到...）（就是这个）
+        # df_scp = df_scp.iloc[:,1:] # 去掉的 是 df_scp['Unnamed: 0'] 这一列.第一列是 NDT,NST_等。。	
+        # df_scp['diagnostic'] = [idx_code if val == 1 else None for idx_code, val in zip(df_scp.index, df_scp['diagnostic'].values)] # 'diagnostic'这一列中 值 为1对应的行序列号。 生成的是[0,...,20(粗略估计)]
+        # df_scp['all'] = df_scp.index
+        
+               
+        labels = df['label'].apply(lambda x: [dict_label.get(i) for i in x if i in dict_label]).values  
+        #Python 字典(Dictionary) get() 函数返回指定键的值。这里的i 就是（键）NDT,NST_等，dict_label这个字典的键指NDT,NST_等。.get(i)就是得到对应键的值。df['label']得到一个集合
         # 说的是在 df 这个字典的键'label'中存进 dict_label 字典中每个键对应的 值 组成的列表 [1（'diagnostic'对应）]。
         # df['scp_codes'] = df['scp_codes'].apply(lambda x: ast.literal_eval(x)) # df['scp_codes']里面每一行对应的是一个小字典，ast.literal_eval(x)保证这个字典不是str
-        # df['label'] = df['scp_codes'].apply(lambda x: set(x.keys())) # 把上面每一行的小字典里面的 键 取唯一 
-        # 这个过程就是 先看 dict_label 这个字典的键值（NDT,NST_等），再看df['label']这个字典的键值，同时符合，就把这个键值 对应的值1，留下（这里是指 'diagnostic' 这一列对应的值，也就是1）
+        # df['label'] = df['scp_codes'].apply(lambda x: set(x.keys())) # 把上面每一行的小字典里面的 键 取唯一 作为 集合 返回。{a,v,b}。返回的是一个集合
+        # [dict_label.get(i)，...]指的是df['label'] 这个列对应的 被选用的行数集合
+        # 这个的最后结果就是。先看I这个在集合df['label']中的每一个元素，如果在dict_label这个字典的键中，则把这个键对应的 SCP文件中的序列号0到20。。存进一个列表中（最后返回的是列表），不懂为啥要加.values
         
         self.mlb = MultiLabelBinarizer().fit(labels) # .fit()指 用labels 这个数据来 拟合 MultiLabelBinarizer() 这个模型。
         self.labels = labels
