@@ -63,7 +63,7 @@ def main():
 
     df = pd.read_csv(os.path.join(df_dir, 'ptbxl_database.csv'))
     df['scp_codes'] = df['scp_codes'].apply(lambda x: ast.literal_eval(x)) # df['scp_codes']里面每一行对应的是一个小字典，ast.literal_eval(x)保证这个字典不是str
-    df['label'] = df['scp_codes'].apply(lambda x: set(x.keys())) # 把上面每一行的小字典里面的 键 取唯一
+    df['label'] = df['scp_codes'].apply(lambda x: set(x.keys())) # 把上面每一行的小字典里面的 键 取唯一。这里是在df这个数据结构里面的最后一列新增了一列，用于存储df.scp_codes 里面的键值
     df_scp = pd.read_csv(os.path.join(df_dir, 'scp_statements.csv'))
     df_scp.index = df_scp['Unnamed: 0'].values # df_scp['Unnamed: 0'] 是一个小字典，键是行序列号（是 0 到...）。值是（0 到...）（就是这个）
     df_scp = df_scp.iloc[:,1:] # 去掉的 第一列是（0 到...）
