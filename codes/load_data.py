@@ -54,9 +54,14 @@ class SignalDataset(torch.utils.data.Dataset):
         dict_label = df_scp[df_scp[target_label].isnull() == False][target_label].to_dict() # 转化成 {index(是 NDT,NST_等) : value('diagnostic'这一列为1的序列号，生成的是[0,...,20(粗略估计)] )}
       
         # 这里target_label指的是 'diagnostic'
-        # data（df_scp）数据类型为DataFrame结构, 一般来说，to_dict()输出为 data_dict[key1][key2]；data_dict 为数据名；key1 为列属性的键值（即 'diagnostic'）；key2 为内层字典对应的键值；（换句话说，就是大字典里面的值就是一个小字典）
-        # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。生成的小字典的键是原来的。行序列号（不连续），已经根据'diagnostic'这一列为1被筛选），字典的值是 'diagnostic'这一列值为1对应的 行序列号（df_scp.index中的）。 生成的是[0,...,33..(粗略估计)]），值是 ‘key1’对应的 那一列 的值,这里是指 'diagnostic' 这一列对应的值，也就是1
-        
+        # data（df_scp）数据类型为DataFrame结构, 一般来说，to_dict()输出为 data_dict[key1][key2]；data_dict 为数据名；key1 为列属性的键值（即 'diagnostic'）；key2 为内层字典对应的键值；生成一个字典
+        # 这里data_dict[key1].to_dict()(也就是dict_label)得到一个小字典。
+        #{'NDT': 'STTC',
+        # 'NST_': 'NST_',
+        # 'DIG': 'STTC',
+        # 'LNGQT': 'STTC',
+        # 'NORM': 'NORM'}
+              
         # df_scp = pd.read_csv(os.path.join(df_dir, 'scp_statements.csv'))  NDT,NST_等是行索引
         # df_scp.index = df_scp['Unnamed: 0'].values # df_scp['Unnamed: 0'] 是一个小字典，键是行序列号（是 0 到...）。值是（0 到...）（就是这个）
         # df_scp = df_scp.iloc[:,1:] # 去掉的 是 df_scp['Unnamed: 0'] 这一列.第一列是 NDT,NST_等。。	
