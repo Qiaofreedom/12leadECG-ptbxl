@@ -121,6 +121,10 @@ class SignalDataset(torch.utils.data.Dataset):
 #        [0, 1, 1, 0, 0, 0],
 #        [0, 0, 0, 1, 0, 0]])
 
+
+# In [4]: mlb.classes_
+# Out[4]: array([2, 3, 4, 5, 6, 1])
+
         
     def __len__(self):
         return len(self.files)
