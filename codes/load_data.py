@@ -97,7 +97,11 @@ class SignalDataset(torch.utils.data.Dataset):
         #4                      {SR, NORM}
         
         
-        self.mlb = MultiLabelBinarizer().fit(labels) # .fit()指 用labels 这个数据来 拟合 MultiLabelBinarizer() 这个模型。
+        self.mlb = MultiLabelBinarizer().fit(labels) 
+        
+        # 对于多标签分类问题而言，一个样本可能同时属于多个类别 
+        #.fit()指 用labels 这个数据来 拟合 MultiLabelBinarizer() 这个模型。
+        
         self.labels = labels
         self.labels_encoded = self.mlb.transform(labels)
         self.sig_scaling = sig_scaling
