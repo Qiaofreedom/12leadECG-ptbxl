@@ -129,6 +129,7 @@ class SignalDataset(torch.utils.data.Dataset):
         label = self.labels_encoded[idx]
         sig = self.load_sig(file)
         return sig, label.astype(np.float32)  # torch.utils.data.Dataset构造的这个迭代器，让这个__getitem__重复len(self.files)次。最后返回的是所有患者的数据。
+    #返回的 label 是类似于    [0, 1, 1, 0, 0, 0]。因为这是多标签分类，同一个患者可以有好几个病。
     def load_sig(self, file):
         sig, meta = wfdb.rdsamp(file) # 单个患者。wfdb.rdsamp 专门数据库读取数据，meta指头文件。如果是12导联，则数据的shape是[n * 12].n指这个患者数据一共有n个采样点
         if self.upsampling_factor != 1:
