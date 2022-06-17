@@ -104,12 +104,12 @@ def main():
             data = data.to(device)
             label = label.to(device)
             
-            model.zero_grad()
+            model.zero_grad() #先将梯度归零
             pred = model(data)
             
             loss = criterion(torch.sigmoid(pred), label)
-            loss.backward()
-            optimizer.step()
+            loss.backward() # 反向传播计算得到每个参数的梯度值
+            optimizer.step() # 通过梯度下降执行一步参数更新
             
             list_real.append(label.detach().cpu().numpy())
             list_pred.append(pred.detach().cpu().numpy())
