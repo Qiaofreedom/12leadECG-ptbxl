@@ -101,6 +101,22 @@ class SignalDataset(torch.utils.data.Dataset):
         self.labels = labels
         self.labels_encoded = self.mlb.transform(labels)
         self.sig_scaling = sig_scaling
+  
+
+#         若 classes= [2,3,4,5,6,1] ，则2值的索引为0，3值的索引为1，依次类推
+#         所以当y=[(1, 2), (3,4),(5,)] ， 1值在classes中的索引为5，所以经fit_transform后变成[0,0,0,0,1]，对应索引为5的位置为1
+#         值在classes中的索引为0，所以经fit_transform后变成[1,0,0,0,0]，对应索引为0的位置为1
+        
+        
+# In [3]: from sklearn.preprocessing import MultiLabelBinarizer
+#    ...: mlb = MultiLabelBinarizer(classes = [2,3,4,5,6,1])
+#    ...: mlb.fit_transform([(1, 2), (3,4),(5,)])
+#    
+# Out[3]:
+# array([[1, 0, 0, 0, 0, 1],
+#        [0, 1, 1, 0, 0, 0],
+#        [0, 0, 0, 1, 0, 0]])
+
         
     def __len__(self):
         return len(self.files)
