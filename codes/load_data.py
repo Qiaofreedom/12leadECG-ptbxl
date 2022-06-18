@@ -132,7 +132,7 @@ class SignalDataset(torch.utils.data.Dataset):
         return len(self.files)
     def __getitem__(self, idx):
         file = self.files[idx] # 单个患者
-        label = self.labels_encoded[idx]
+        label = self.labels_encoded[idx] #单个患者的标签 已经转换成类似于  [1, 0, 0, 0, 0, 1]
         sig = self.load_sig(file)
         return sig, label.astype(np.float32)  # torch.utils.data.Dataset构造的这个迭代器，让这个__getitem__重复len(self.files)次。最后返回的是所有患者的数据。
     #返回的 label 是类似于    [0, 1, 1, 0, 0, 0]。因为这是多标签分类，同一个患者可以有好几个病。
