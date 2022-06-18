@@ -69,7 +69,7 @@ def main():
     # Get model
     d = dataset_train[0] # dataset_train 包含m 个患者，d 为其中一个。dataset_train的形式为：sig, label.astype(np.float32)，其中sig的shape为[12*n],n为采样点长度
     input_channel = d[0].shape[0] # d[0]是sig。shape[0]指d[0]这个矩阵的行数
-    num_classes = d[1].shape[0] # d[1]是label.astype(np.float32)。shape[0]指d[1]这个矩阵的行数
+    num_classes = d[1].shape[0] # d[1]是label.astype(np.float32)。是单个患者的标签。 已经转换成类似于  [1, 0, 0, 0, 0,... 1] 这里指一共分成多少类
     del d
     model_config_name = opt.model_config_name
     model_config = json.load(open(os.path.join(base_dir, model_config_name), 'r'))
