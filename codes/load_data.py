@@ -89,6 +89,8 @@ class SignalDataset(torch.utils.data.Dataset):
         #array([list(['NORM']), list(['NORM']), list(['NORM']), ..., list([]),
         #list(['NORM']), list(['NORM'])], dtype=object)
         
+        # print(list(['NORM'])) 的结果是 ['NORM']
+        
         #df['label']结果
         #ecg_id
         #1               {SR, NORM, LVOLT}
